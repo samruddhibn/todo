@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List with Priority</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+        .task {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .task-list {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>To-Do List</h2>
+    <form id="todoForm">
+        <div class="form-group">
+            <label for="task">Task:</label>
+            <input type="text" class="form-control" id="task" required>
+        </div>
+        <div class="form-group">
+            <label for="priority">Priority:</label>
+            <select class="form-control" id="priority" required>
+                <option value="1">High</option>
+                <option value="2">Medium</option>
+                <option value="3">Low</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Task</button>
+    </form>
+
+    <h2 class="mt-5">Tasks</h2>
+    <div class="task-list" id="taskList">
+        <!-- Task items will be inserted here -->
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    const todoForm = document.getElementById('todoForm');
+    const taskList = document.getElementById('taskList');
+
+    let tasks = [];
+
+    todoForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const taskInput = document.getElementById('task').value;
+        const priorityInput = document.getElementById('priority').value;
+
+        const newTask = {
+            task: taskInput,
+            priority: parseInt(priorityInput)
+        };
+
+        tasks.push(newTask);
+        displayTasks();
+        todoForm.reset();
+    });
+
+    function displayTasks() {
+        // Clear the current task list
+        taskList.innerHTML = '';
+
+        // Sort tasks based on priority (1 = High, 2 = Medium, 3 = Low)
+        tasks.sort((a, b) => a.priority - b.priority);
+
+        // Create task elements
+        tasks.forEach((task, index) => {
+            const taskDiv = document.createElement('div');
+            taskDiv.className = 'task';
+            taskDiv.innerHTML = `
+                <span>${task.task} (Priority: ${task.priority === 1 ? 'High' : task.priority === 2 ? 'Medium' : 'Low'})</span>
+                <button class="btn btn-danger btn-sm" onclick="removeTask(${index})">Remove</button>
+            `;
+            taskList.appendChild(taskDiv);
+        });
+    }
+
+    function removeTask(index) {
+        tasks.splice(index, 1);
+        displayTasks();
+    }
+</script>
+</body>
+</html>
